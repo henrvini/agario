@@ -20,13 +20,13 @@ const settings = {
 initGame();
 
 io.on('connect', (socket) => {
-    const playerName = 'Vini';
-    const playerConfig = new PlayerConfig(settings);
-    const playerData = new PlayerData(playerName, settings);
-    const player = new Player(socket.id, playerConfig, playerData);
+    socket.on('init', (playerObj, ackCallback) => {
+        const playerName = 'Vini';
+        const playerConfig = new PlayerConfig(settings);
+        const playerData = new PlayerData(playerName, settings);
+        const player = new Player(socket.id, playerConfig, playerData);
 
-    socket.emit('init', {
-        orbs
+        ackCallback(orbs);
     });
 });
 
