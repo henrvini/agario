@@ -15,5 +15,5 @@ const init = async () => {
 };
 
 socket.on('tick', (players) => {
-    console.log(players);
+    players = playersArray;
 });

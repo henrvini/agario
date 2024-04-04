@@ -9,14 +9,19 @@ const draw = () => {
     const camY = -player.locY + canvas.height / 2;
 
     context.translate(camX, camY);
-    context.beginPath();
-    context.fillStyle = 'rgb(255,0,0)';
-    context.arc(player.locX, player.locY, 10, 0, Math.PI * 2);
-    context.fill();
-    context.lineWidth = 2;
-    context.strokeStyle = 'rgb(0,255,0)';
-    context.stroke();
 
+    // Draw all the players
+    players.forEach(({ playerData }) => {
+        context.beginPath();
+        context.fillStyle = playerData.color;
+        context.arc(playerData.locX, playerData.locY, playerData.radius, 0, Math.PI * 2);
+        context.fill();
+        context.lineWidth = 3;
+        context.strokeStyle = 'rgb(0,255,0)';
+        context.stroke();
+    });
+
+    // Draw all the orbs
     orbs.forEach((orb) => {
         context.beginPath();
         context.fillStyle = orb.color;
