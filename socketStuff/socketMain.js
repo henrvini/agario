@@ -22,6 +22,8 @@ let tickTockInterval;
 initGame();
 
 io.on('connect', (socket) => {
+    let player = {};
+
     socket.on('init', (playerObj, ackCallback) => {
         if (players.length === 0) {
             // someone is about to be added to players. Start tick-tocking
@@ -34,10 +36,25 @@ io.on('connect', (socket) => {
         const playerName = 'Vini';
         const playerConfig = new PlayerConfig(settings);
         const playerData = new PlayerData(playerName, settings);
-        const player = new Player(socket.id, playerConfig, playerData);
+        player = new Player(socket.id, playerConfig, playerData);
         players.push(player);
 
         ackCallback(orbs);
+    });
+
+    socket.on('tock', (data) => {
+        speed = player.playerConfig.speed;
+        const xV = (player.PlayerConfig.xVector = data.xVector);
+        const yV = (player.PlayerConfig.yVector = data.yVector);
+
+        if ((player.playerData.locX < 5 && xV < 0) || (player.playerData.locX > 500 && xV > 0)) {
+            player.playerData.locY -= speed * yV;
+        } else if ((player.playerData.locY < 5 && yV > 0) || (player.playerData.locY > 500 && yV < 0)) {
+            player.playerData.locX += speed * xV;
+        } else {
+            player.playerData.locX += speed * xV;
+            player.playerData.locY -= speed * yV;
+        }
     });
 
     socket.on('disconnect', () => {

@@ -9,11 +9,17 @@ const init = async () => {
         playerName: player.name
     });
 
+    setInterval(() => {
+        socket.emit('tock', {
+            xVector: player.xVector,
+            yVector: player.yVector
+        });
+    }, 33);
     console.log(initOrbs);
     orbs = initOrbs;
     draw();
 };
 
-socket.on('tick', (players) => {
+socket.on('tick', (playersArray) => {
     players = playersArray;
 });
