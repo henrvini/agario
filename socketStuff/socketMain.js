@@ -16,17 +16,35 @@ const settings = {
     worldHeight: 500,
     defaultGenericOrbSize: 5
 };
+const players = [];
+let tickTockInterval;
 
 initGame();
 
 io.on('connect', (socket) => {
     socket.on('init', (playerObj, ackCallback) => {
+        if (players.length === 0) {
+            // someone is about to be added to players. Start tick-tocking
+            tickTockInterval = setInterval(() => {
+                io.to('game').emit('tick', players);
+            }, 33); // 1000/30=33.3333, there're 33, 30's in 1000 ms, 1/30th of a second, or 1 of 30fps
+        }
+
+        socket.join('game');
         const playerName = 'Vini';
         const playerConfig = new PlayerConfig(settings);
         const playerData = new PlayerData(playerName, settings);
         const player = new Player(socket.id, playerConfig, playerData);
+        players.push(player);
 
         ackCallback(orbs);
+    });
+
+    socket.on('disconnect', () => {
+        // check if players empty. If so, stop ticking
+        if (players.length === 0) {
+            clearInterval(tickTockInterval);
+        }
     });
 });
 
