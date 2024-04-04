@@ -36,7 +36,7 @@ io.on('connect', (socket) => {
         }
 
         socket.join('game');
-        const playerName = 'Vini';
+        const playerName = playerObj.playerName;
         const playerConfig = new PlayerConfig(settings);
         const playerData = new PlayerData(playerName, settings);
         player = new Player(socket.id, playerConfig, playerData);
@@ -73,8 +73,10 @@ io.on('connect', (socket) => {
                 capturedOrbI,
                 newOrb: orbs[capturedOrbI]
             };
+
             // emit to all sockets in game room
             io.to('game').emit('orbSwitch', orbData);
+            io.to('game').emit('updateLeaderBoard', getLeaderBoard());
         }
 
         // Players collisions
@@ -88,6 +90,7 @@ io.on('connect', (socket) => {
 
         if (absorbData) {
             io.to('game').emit('playerAbsorbed', absorbData);
+            io.to('game').emit('updateLeaderBoard', getLeaderBoard());
         }
     });
 
@@ -103,4 +106,18 @@ function initGame() {
     for (let i = 0; i < settings.defaultNumberOfOrbs; i++) {
         orbs.push(new Orb(settings));
     }
+}
+
+function getLeaderBoard() {
+    const leaderBoardArray = players.map((curPlayer) => {
+        if (curPlayer.playerData) {
+            return {
+                name: curPlayer.playerData.name,
+                score: curPlayer.playerData.score
+            };
+        } else {
+            return {};
+        }
+    });
+    return leaderBoardArray;
 }
