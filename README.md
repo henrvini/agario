@@ -1,12 +1,13 @@
-# Bem-vindo ao Agar.io Clone!
+<div align="center">
 
-![Agar io_logo](https://github.com/henrvini/agario/assets/50965017/de498005-4211-4f80-9b0a-27a42796af67)
+  # Bem-vindo ao Agar.io Clone!
+  ![Agar io_logo](https://github.com/henrvini/agario/assets/50965017/a34754cd-1fc4-400c-b2d2-1a6b94370e42)
 
-Este é um clone do famoso jogo online Agar.io, desenvolvido usando JavaScript, HTTP Server e Socket.IO.
+</div>
 
 ## Sobre o Projeto
 
-Este projeto foi exclusivamente desenvolvido para fins de aprendizagem em Socket.IO.
+Este é um clone do famoso jogo online Agar.io, desenvolvido usando JavaScript, HTTP Server e Socket.IO. Este projeto foi exclusivamente desenvolvido para fins de aprendizagem em Socket.IO.
 
 O Agar.io Clone é uma recriação do jogo original simplificada, onde os jogadores controlam pequenas células que crescem ao consumir outras células menores.
 
