@@ -1,5 +1,7 @@
 const io = require('../servers').io;
 const app = require('../servers').app;
+const checkForOrbCollisions = require('./socketCollisions').checkForOrbCollisions;
+const checkForPlayerCollisions = require('./socketCollisions').checkForPlayerCollisions;
 
 const Player = require('./classes/Player');
 const PlayerConfig = require('./classes/PlayerConfig');
@@ -53,13 +55,39 @@ io.on('connect', (socket) => {
         const xV = (player.playerConfig.xVector = data.xVector);
         const yV = (player.playerConfig.yVector = data.yVector);
 
-        if ((player.playerData.locX < 5 && xV < 0) || (player.playerData.locX > 500 && xV > 0)) {
-            player.playerData.locY -= speed * yV;
-        } else if ((player.playerData.locY < 5 && yV > 0) || (player.playerData.locY > 500 && yV < 0)) {
+        if ((player.playerData.locX > 5 && xV < 0) || (player.playerData.locX < settings.worldWidth && xV > 0)) {
             player.playerData.locX += speed * xV;
-        } else {
-            player.playerData.locX += speed * xV;
+        }
+        if ((player.playerData.locY > 5 && yV > 0) || (player.playerData.locY < settings.worldHeight && yV < 0)) {
             player.playerData.locY -= speed * yV;
+        }
+
+        // Orbs collisions
+        const capturedOrbI = checkForOrbCollisions(player.playerData, player.playerConfig, orbs, settings);
+
+        if (capturedOrbI != null) {
+            // remove the orb consumed and add a new Orb
+            orbs.splice(capturedOrbI, 1, new Orb(settings));
+            // update the client with the new orb
+            const orbData = {
+                capturedOrbI,
+                newOrb: orbs[capturedOrbI]
+            };
+            // emit to all sockets in game room
+            io.to('game').emit('orbSwitch', orbData);
+        }
+
+        // Players collisions
+        const absorbData = checkForPlayerCollisions(
+            player.playerData,
+            player.playerConfig,
+            players,
+            playersForUsers,
+            socket.id
+        );
+
+        if (absorbData) {
+            io.to('game').emit('playerAbsorbed', absorbData);
         }
     });
 

@@ -7,6 +7,7 @@ class PlayerData {
         this.color = this.getRandomColor();
         this.score = 0;
         this.orbsAbsorbed = 0;
+        this.playerAbsorbed = 0;
     }
 
     getRandomColor() {
